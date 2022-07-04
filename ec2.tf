@@ -17,7 +17,7 @@ resource "aws_launch_template" "this" {
   user_data     = filebase64("ec2_setup.sh")
 
   depends_on = [
-    aws_db_instance.rds-tf
+    aws_db_instance.web
   ]
   monitoring {
     enabled = true
