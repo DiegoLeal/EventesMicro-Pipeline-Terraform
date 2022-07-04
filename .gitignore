@@ -4,7 +4,6 @@
 *.tfvars*
 ./idea
 .idea
-.github
 crash.log
 override.tf
 override.tf.json
