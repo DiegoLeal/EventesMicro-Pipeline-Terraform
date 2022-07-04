@@ -42,8 +42,7 @@ resource "aws_security_group" "web" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #cidr_blocks = [aws_subnet.this["pvt_a"].cidr_block]
+    cidr_blocks = [aws_subnet.this["pvt_a"].cidr_block]
   }
 
   tags = merge(local.common_tags, { Name = "Web Server" })
@@ -54,20 +53,18 @@ resource "aws_security_group" "db" {
   description = "Allow incoming database connections"
   vpc_id      = aws_vpc.this.id
 
-  /* ingress {
+  ingress {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #security_groups = [aws_security_group.web.id]
+    security_groups = [aws_security_group.web.id]
   }
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #cidr_blocks = [aws_vpc.this.cidr_block]
+    cidr_blocks = [aws_vpc.this.cidr_block]
   }
 
   ingress {
@@ -105,32 +102,11 @@ resource "aws_security_group" "db" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  } */
-
   ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.web.id]
   }
 
 
@@ -146,8 +122,7 @@ resource "aws_security_group" "alb" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #cidr_blocks = [aws_vpc.this.cidr_block]
+    cidr_blocks = [aws_vpc.this.cidr_block]
   }
 
   ingress {
@@ -182,8 +157,7 @@ ingress {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #security_groups = [aws_security_group.web.id]
+    security_groups = [aws_security_group.web.id]
   }
 
 
@@ -213,8 +187,7 @@ resource "aws_security_group" "autoscaling" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #security_groups = [aws_security_group.alb.id]
+    security_groups = [aws_security_group.alb.id]
   }
 
   ingress {
@@ -242,8 +215,7 @@ ingress {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #security_groups = [aws_security_group.web.id]
+    security_groups = [aws_security_group.web.id]
   }
 
   egress {
@@ -265,15 +237,14 @@ resource "aws_security_group" "events" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [aws_vpc.this.cidr_block]
   }
 
   ingress {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #security_groups = [aws_security_group.alb.id]
+    security_groups = [aws_security_group.alb.id]
   }
 
   ingress {
@@ -301,61 +272,7 @@ ingress {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #security_groups = [aws_security_group.web.id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-
-  /* ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #cidr_blocks = [aws_vpc.this.cidr_block]
-  }
-
-  ingress {
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #security_groups = [aws_security_group.alb.id]
-  }
-
-  ingress {
-    from_port   = 443 # https
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-}
-
-  ingress {
-    from_port   = 3033
-    to_port     = 3033
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-}
-
-ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #security_groups = [aws_security_group.web.id]
+    security_groups = [aws_security_group.web.id]
   }
 
 
@@ -367,12 +284,11 @@ ingress {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]  
-    #security_groups = [aws_security_group.web.id]
-  } */
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.web.id]
+  }
 
   tags = merge(local.common_tags, { Name = "EventsMicro Machine" })
 }

@@ -16,7 +16,7 @@ resource "aws_db_instance" "web" {
   parameter_group_name = "default.postgres13"
   availability_zone    = "${var.aws_region}a"
   skip_final_snapshot  = true
-  
+
   db_subnet_group_name   = aws_db_subnet_group.default.id
   vpc_security_group_ids = [aws_security_group.db.id]
 }
